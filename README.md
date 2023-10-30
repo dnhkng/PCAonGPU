@@ -1,11 +1,11 @@
 # PCAonGPU
 
-A powerful implementation of Incremental Principal Components Analysis that runs on GPU, built on top of PyTorch. 30x speed-ups on gigabyte-scale PCA.
+A powerful implementation of Incremental Principal Components Analysis that runs on GPU, built on top of PyTorch. Up to 20x speed-ups on gigabyte-scale PCA.
 
 ## Installation
 
 ### From PyPi
-pip install PCAonGPU
+`pip install PCAonGPU`
 
 
 ### From Source
