@@ -24,7 +24,7 @@ A powerful implementation of Incremental Principal Components Analysis that runs
 ## Usage
 
 ```python
-from gpu_pca import PCAonGPU
+from gpu_pca import IncrementalPCAonGPU
 
 # Create an instance
 model = PCAonGPU(n_components=5)
