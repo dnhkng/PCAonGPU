@@ -27,7 +27,7 @@ A powerful implementation of Incremental Principal Components Analysis that runs
 from gpu_pca import IncrementalPCAonGPU
 
 # Create an instance
-model = PCAonGPU(n_components=5)
+model = IncrementalPCAonGPU(n_components=5)
 
 # Fit the model (either using `fit` or `partial_fit`)
 model.fit(your_data)
