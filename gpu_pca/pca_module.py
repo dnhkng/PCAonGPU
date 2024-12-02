@@ -230,3 +230,20 @@ class IncrementalPCAonGPU():
         X = X.to(self.device)
         X -= self.mean_
         return torch.mm(X, self.components_.T)
+    
+    def fit_transform(self, X, check_input=True):
+        """
+        Fits the model with data `X` and then transforms it.
+
+        Combines the fitting process to extract principal components and the transformation
+        process to reduce the dimensionality of the input data in a single step.
+
+        Args:
+            X (torch.Tensor): The input data tensor with shape (n_samples, n_features).
+            check_input (bool, optional): If True, validates the input. Defaults to True.
+
+        Returns:
+            torch.Tensor: Transformed data tensor with shape (n_samples, n_components).
+        """
+        self.fit(X, check_input=check_input)
+        return self.transform(X)
