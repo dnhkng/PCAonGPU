@@ -61,7 +61,7 @@ class IncrementalPCAonGPU():
         """
         if not isinstance(X, torch.Tensor):
             X = torch.tensor(X, dtype=dtype).to(self.device)
-        elif X.device != self.device:
+        if X.device == torch.device("cpu"):
             X = X.to(self.device)
         if copy:
             X = X.clone()
@@ -174,7 +174,7 @@ class IncrementalPCAonGPU():
             self.n_components_ = min(n_samples, n_features)
 
         col_mean, col_var, n_total_samples = self._incremental_mean_and_var(
-            X, self.mean_, self.var_, torch.tensor([self.n_samples_seen_], device=self.device)
+            X, self.mean_, self.var_, torch.tensor([self.n_samples_seen_], device=X.device)
         )
 
         # Whitening
@@ -184,7 +184,7 @@ class IncrementalPCAonGPU():
             col_batch_mean = torch.mean(X, dim=0)
             X -= col_batch_mean
             mean_correction_factor = torch.sqrt(
-                torch.tensor((self.n_samples_seen_ / n_total_samples.item()) * n_samples, device=self.device)
+                torch.tensor((self.n_samples_seen_ / n_total_samples.item()) * n_samples, device=X.device)
             )
             mean_correction = mean_correction_factor * (self.mean_ - col_batch_mean)
 
@@ -215,7 +215,7 @@ class IncrementalPCAonGPU():
             self.noise_variance_ = 0.0
         return self
 
-    def transform(self, X):
+    def transform(self, X, check_input=True):
         """
         Applies dimensionality reduction to `X`.
 
@@ -227,7 +227,11 @@ class IncrementalPCAonGPU():
         Returns:
             torch.Tensor: Transformed data tensor with shape (n_samples, n_components).
         """
-        X = X.to(self.device)
+        if check_input:
+            X = self._validate_data(X)
+        if self.mean_ is None or self.components_ is None:
+            raise ValueError("Model must be fitted before transforming data. Please call 'fit' method first or call 'fit_transform' method instead.")
+        X = X.to(self.mean_.device)
         X -= self.mean_
         return torch.mm(X, self.components_.T)
     
